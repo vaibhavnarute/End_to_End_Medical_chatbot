@@ -18,7 +18,7 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config user.name "Vaibhav Narute"
+          git config user.name "VaibhavNarute"
           git config user.email "narutevaibhav95@gmail.com"
 
       - name: Pull latest changes from Hugging Face Space
