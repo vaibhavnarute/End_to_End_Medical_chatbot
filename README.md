@@ -1,3 +1,4 @@
+---
 title: RAG
 emoji: 📊
 colorFrom: blue
@@ -7,3 +8,4 @@ sdk_version: 1.41.1
 app_file: app.py
 pinned: false
 license: mit
+---
