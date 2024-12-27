@@ -1,38 +1,20 @@
-name: Sync with Hugging Face Space
-
+name: Sync to Hugging Face hub
 on:
-  pull_request:
+  push:
     branches: [main]
-  workflow_dispatch:
 
-permissions:
-  contents: write
-  pull-requests: write
+  # to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up Git
-        run: |
-          git config user.name "VaibhavNarute"
-          git config user.email "narutevaibhav95@gmail.com"
-
-      - name: Pull latest changes from Hugging Face Space
-        run: |
-          git push https://$HF_TOKEN@huggingface.co/spaces/vaibhav873/hello main
-
-      - name: Check for large files
-        uses: ActionsDesk/lfs-warning@v2.0
+      - uses: actions/checkout@v3
         with:
-          filesizelimit: 10485760
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Push to Hugging Face Space
+          fetch-depth: 0
+          lfs: true
+      - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: |
-          git push https://huggingface.co/spaces/vaibhav873/hello main
+        run: git push --force https://vaibhav873:$HF_TOKEN@huggingface.co/spaces/vaibhav873/hello main
