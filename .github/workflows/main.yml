@@ -1,20 +1,52 @@
-name: Sync to Hugging Face hub
+name: Sync with Hugging Face Space
+
 on:
   push:
     branches: [main]
-
-  # to run this workflow manually from the Actions tab
+  pull_request:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+    
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Git
+        run: |
+          git config user.name "Vaibhav Narute"
+          git config user.email "narutevaibhav95@gmail.com"
+      
+      # Install Git LFS to handle large files
+      - name: Install Git LFS
+        run: |
+          git lfs install
+          git lfs track "*.pdf"  # Track PDF files (adjust for other file types if needed)
+          git add .gitattributes
+          git commit -m "Add LFS tracking for large files" || echo "No changes to commit"
+
+      - name: Pull latest changes from Hugging Face Space
+        run: |
+          git pull https://huggingface.co/spaces/vaibhav873/hello main || echo "No changes to pull"
+
+      # Check for files larger than 10 MB
+      - name: Check for large files
+        uses: ActionsDesk/lfs-warning@v2.0
         with:
-          fetch-depth: 0
-          lfs: true
-      - name: Push to hub
+          filesizelimit: 10485760
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://vaibhav873:$HF_TOKEN@huggingface.co/spaces/vaibhav873/hello main
+        run: |
+          git add .
+          git commit -m "Sync with Hugging Face" || echo "No changes to commit"
+          git push https://user:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/vaibhav873/hello main
