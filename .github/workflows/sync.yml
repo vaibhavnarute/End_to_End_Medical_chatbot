@@ -1,0 +1,42 @@
+name: Deploy to Hugging Face Space
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+      with:
+        lfs: true
+
+    - name: Set Up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install Git LFS
+      run: |
+        sudo apt-get install git-lfs
+        git lfs install
+
+    - name: Configure Hugging Face
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        git config --global user.email "your-email@example.com"
+        git config --global user.name "Your Name"
+        git remote set-url origin https://huggingface.co/spaces/vaibhav873/hello
+        echo "machine huggingface.co login $HF_TOKEN" > ~/.netrc
+
+    - name: Push to Hugging Face
+      run: |
+        git add .
+        git commit -m "Sync with Hugging Face" || echo "No changes to commit"
+        git pull origin main --rebase
+        git push origin main
