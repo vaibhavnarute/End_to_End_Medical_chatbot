@@ -39,4 +39,5 @@ jobs:
         git add .
         git commit -m "Sync with Hugging Face" || echo "No changes to commit"
         git pull origin main --rebase
-        git push origin main
+        git push https://user:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/vaibhav873/hello main
+        
