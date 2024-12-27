@@ -23,7 +23,7 @@ jobs:
 
       - name: Pull latest changes from Hugging Face Space
         run: |
-          git pull https://huggingface.co/spaces/vaibhav873/hello main || echo "No changes to pull"
+          git push https://$HF_TOKEN@huggingface.co/spaces/vaibhav873/hello main
 
       - name: Check for large files
         uses: ActionsDesk/lfs-warning@v2.0
